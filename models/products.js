@@ -109,6 +109,15 @@ const myEarnings = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  name: {
+    type: String,
+  },
+  phone: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
 });
 
 const Products = mongoose.model("Products", productsSchema);

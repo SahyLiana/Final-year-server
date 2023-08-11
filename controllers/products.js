@@ -41,9 +41,12 @@ const makePayment = async (req, res) => {
   const myRequest = req.body;
   const date = new Date();
   let total = 0;
+  //console.log(myRequest);
   console.log(`The number of element is ${myRequest.myCarts.length}`);
   console.log("The element are:");
   console.log(myRequest.myCarts);
+  console.log("My details are:");
+  console.log(myRequest.myDetails);
 
   let myProduct = {
     name: "",
@@ -121,8 +124,8 @@ const makePayment = async (req, res) => {
     total = total + myRequest.myCarts[i].indTotal;
     // console.log(total);
   }
-  // myRequest.total = total;
-  // console.log(myRequest);
+  myRequest.total = total;
+  console.log(myRequest);
 
   try {
     // await Earning.deleteMany();
@@ -145,6 +148,9 @@ const makePayment = async (req, res) => {
       // transactions: [{ productID: transactions[0].productID }],
       date: myFormat,
       total: sum,
+      name: myRequest.myDetails.name,
+      phone: myRequest.myDetails.phone,
+      address: myRequest.myDetails.address,
       transactions: transactions.map((transaction) => {
         return { ...transaction, _id: transaction.productID };
       }),
