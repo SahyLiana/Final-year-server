@@ -47,6 +47,7 @@ const makePayment = async (req, res) => {
   console.log(myRequest.myCarts);
   console.log("My details are:");
   console.log(myRequest.myDetails);
+  console.log(`My transaction id is:${myRequest.transactionID}`);
 
   let myProduct = {
     name: "",
@@ -147,6 +148,7 @@ const makePayment = async (req, res) => {
     const doc = new Earning({
       // transactions: [{ productID: transactions[0].productID }],
       date: myFormat,
+      transactionID: myRequest.transactionID,
       total: sum,
       name: myRequest.myDetails.name,
       phone: myRequest.myDetails.phone,
@@ -419,6 +421,21 @@ const deleteProduct = async (req, res) => {
   res.status(200).json("Delete product");
 };
 
+const getSingleTransaction = async (req, res) => {
+  const { id: transactionID } = req.body;
+  console.log(req.body);
+
+  console.log(transactionID);
+
+  const transaction = await Earning.find({ transactionID: transactionID });
+
+  if (transaction.length === 0) {
+    throw new CustomError("Oops!Transaction not Found...", 401);
+  }
+
+  res.status(200).json(transaction);
+};
+
 module.exports = {
   getAllProducts,
   getSingleProduct,
@@ -429,5 +446,6 @@ module.exports = {
   UpdateOrder,
   createProduct,
   deleteProduct,
+  getSingleTransaction,
   upload,
 };

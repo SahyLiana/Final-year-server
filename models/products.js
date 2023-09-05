@@ -118,6 +118,9 @@ const myEarnings = new mongoose.Schema({
   address: {
     type: String,
   },
+  transactionID: {
+    type: String,
+  },
 });
 
 const Products = mongoose.model("Products", productsSchema);

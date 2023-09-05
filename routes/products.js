@@ -12,6 +12,7 @@ const {
   UpdateOrder,
   createProduct,
   deleteProduct,
+  getSingleTransaction,
   upload,
 } = require("../controllers/products");
 const routes = express.Router();
@@ -25,6 +26,7 @@ routes.route("/product/:id").get(getSingleProduct);
 routes.route("/order/:id").get(authentications, SingleOrder);
 routes.route("/order/:id").patch(authentications, UpdateOrder);
 routes.route("/delete/:id").delete(authentications, deleteProduct);
+routes.route("/transaction").post(getSingleTransaction);
 routes
   .route("/create")
   .post(authentications, upload.single("image"), createProduct);
