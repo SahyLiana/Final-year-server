@@ -249,7 +249,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-let upload = multer({ storage: myStorage });
+let upload = multer({ storage: myStorage, fileFilter });
 
 const UpdateProduct = async (req, res) => {
   const { id: productID } = req.params;

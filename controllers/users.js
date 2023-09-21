@@ -7,32 +7,63 @@ const updatePassword = async (req, res) => {
   const formData = req.body;
   console.log(formData);
   console.log(userID);
-  try {
-    const findUser = await Users.find({
+  // try {
+  const findUser = await Users.findOneAndUpdate(
+    {
       _id: userID,
       password: formData.oldpassword,
-    });
-
-    if (findUser.length === 0) {
-      throw new CustomError("Wrong old password", 401);
-    } else {
-      const updatePassword = await Users.findOneAndUpdate(
-        { _id: userID },
-        { password: formData.password },
-        {
-          runValidators: true,
-          new: true,
-        }
-      );
+    },
+    { password: formData.password },
+    {
+      runValidators: true,
+      new: true,
     }
+  );
 
-    console.log("User found is");
-    console.log(findUser);
-  } catch (error) {
-    throw new CustomError("Sorry,you did a bad request", 401);
+  // if (findUser.length === 0) {
+  //   throw new CustomError("Wrong old password", 401);
+  // } else {
+  //   const updatePassword = await Users.findOneAndUpdate(
+  //     { _id: userID },
+  //     { password: formData.password },
+  //     {
+  //       runValidators: true,
+  //       new: true,
+  //     }
+  //   );
+  // }
+
+  if (!findUser) {
+    throw new CustomError("Wrong old password", 401);
   }
+  console.log("User found is");
+  console.log(findUser);
+  // } catch (error) {
+  //   throw new CustomError("Wrong old password", 401);
+  // }
 
   res.status(200).json("Update users");
 };
 
-module.exports = { updatePassword };
+const forgetPassword = async (req, res) => {
+  const { name } = req.params;
+  console.log(name);
+  // try {
+  const updatePassword = await Users.findOneAndUpdate(
+    { name: name },
+    { password: "123" },
+    { new: true, runValidators: true }
+  );
+  console.log(updatePassword);
+
+  if (!updatePassword) {
+    throw new CustomError("Username not found", 401);
+  }
+  // } catch (e) {
+  //   throw new CustomError("Username not found");
+  // }
+
+  res.status(200).json("Forget password");
+};
+
+module.exports = { updatePassword, forgetPassword };
