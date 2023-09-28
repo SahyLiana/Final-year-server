@@ -214,21 +214,47 @@ const UpdateOrder = async (req, res) => {
   const { status } = req.body;
   console.log(orderID);
   console.log(status);
-
-  try {
-    const updateOrder = await Earning.findOneAndUpdate(
-      { _id: orderID },
-      { status: status },
-      {
-        runValidators: true,
-        new: true,
+  if (status === "Cancelled") {
+    try {
+      const cancelOrder = await Earning.findOne({ _id: orderID });
+      console.log("Order cancel is");
+      console.log(cancelOrder.transactions);
+      const transactions = cancelOrder.transactions;
+      for (let i = 0; i < transactions.length; i++) {
+        const getProduct = await Products.findOne({ _id: transactions[i]._id });
+        const updateProduct = await Products.findOneAndUpdate(
+          { _id: transactions[i]._id },
+          { quantity: getProduct.quantity + transactions[i].nb },
+          { runValidators: true, new: true }
+        );
+        console.log(updateProduct);
       }
-    );
-    console.log(updateOrder);
-  } catch (error) {
-    throw new CustomError("Order not Found", 401);
+      await Earning.findOneAndUpdate(
+        { _id: orderID },
+        { status: status },
+        { runValidators: true, new: true }
+      );
+      return res.status(200).json(cancelOrder.transactions);
+    } catch (error) {
+      throw new CustomError("Orderss not Found", 401);
+    }
+  } else {
+    try {
+      const updateOrder = await Earning.findOneAndUpdate(
+        { _id: orderID },
+        { status: status },
+        {
+          runValidators: true,
+          new: true,
+        }
+      );
+      console.log(updateOrder);
+    } catch (error) {
+      throw new CustomError("Order not Found", 401);
+    }
   }
-  res.status(200).json("Update Order");
+
+  // res.status(200).json("Update Order");
 };
 
 const myStorage = multer.diskStorage({
