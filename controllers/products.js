@@ -275,7 +275,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-let upload = multer({ storage: myStorage, fileFilter });
+let upload = multer({ storage: myStorage });
 
 const UpdateProduct = async (req, res) => {
   const { id: productID } = req.params;
@@ -301,6 +301,7 @@ const UpdateProduct = async (req, res) => {
 
   const product = { ...req.body };
   console.log("My product is");
+  console.log(product);
   console.log(req.body);
   console.log(req.file);
   if (req.file?.filename) {
@@ -373,24 +374,24 @@ const UpdateProduct = async (req, res) => {
         { new: true, runValidators: true }
       );
     }
-    // const getProduct = await Products.findOneAndUpdate(
-    //   { _id: productID },
-    //   {
-    //     name: name,
-    //     price: Number(price),
-    //     oldPrice: oldPrice,
-    //     quantity: Number(quantity),
-    //     featured: featured,
-    //     category: category,
-    //     image: image,
-    //     description: description,
-    //   },
-    //   { new: true, runValidators: true }
-    // );
+    const getProducts = await Products.findOneAndUpdate(
+      { _id: productID },
+      {
+        name: name,
+        price: Number(price),
+        oldPrice: oldPrice,
+        quantity: Number(quantity),
+        featured: featured,
+        category: category,
+        image: image,
+        description: description,
+      },
+      { new: true, runValidators: true }
+    );
     console.log("The old product is");
     console.log(getProduct);
     console.log("The new product from the form is");
-    console.log(product);
+    console.log(getProducts);
   } catch (error) {
     throw new CustomError("Product not found...", 401);
   }
@@ -408,7 +409,7 @@ const createProduct = async (req, res) => {
   let { name, price, oldPrice, quantity, featured, category, description } =
     product;
 
-  if (featured === "false" || !featured) {
+  if (featured === "false" || featured === "undefined") {
     product.featured = false;
   } else {
     product.featured = true;
